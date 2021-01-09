@@ -3,4 +3,6 @@
 .RData
 .Ruserdata
 data/ships.csv
+data/ships2.csv
 rsconnect/*
+secret.json

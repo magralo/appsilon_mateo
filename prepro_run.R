@@ -12,3 +12,4 @@ max_dist <- get_distances('data/ships.csv') %>% ### Calculating distance between
 max_dist%>%
   write.csv('data/toshiny.csv')
 
+

@@ -47,6 +47,7 @@ apply_summary <- function(df){
     mutate(avg_distance=mean(distance), number = length(distance))%>% ### Get the summary
     filter(distance==max(distance))%>% ### Filter for the max distance
     arrange(datefull)%>% ### sort
+    mutate(n_max=length(distance))%>%
     do(tail(.,1))%>% ### Select the last obs... this is the special case
     ungroup()
   
