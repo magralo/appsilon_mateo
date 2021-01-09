@@ -9,6 +9,7 @@ A few notes about this app:
 - to run this on your local machine just clone this project and run the app.R
 - if you want to run the whole project (including the propro part) on your local machine please download the dataset and save as data/ships.csv
 - Distance between two points is calculated as geosphere::distGeo
+- The in depth tab only loads after a click because the bigquery is not made for BI (at least the standard usage) so the query is to slow so much slower than the rest of the app.
 
 Some coments about the dataset
 

@@ -52,14 +52,16 @@ CardsServer <- function(id, value , title="Sample title" ,units) {
 
 inDUI <- function(id) {
   semanticPage(
-    leafletOutput(NS(id,'map_all')),
+    h4('If there is no information please click to load data'),
+    actionButton(NS(id,'get_iddata'),label = "get data from bigquery"),
     br(),
-    plotlyOutput(NS(id,'dist_all')),
+    leafletOutput(NS(id,'map_all')),
     br(),
     numeric_input(NS(id,'get_th'),label = "Distance threshold for distribution",min = 0,value = 1),
     br(),
-    actionButton(NS(id,'get_iddata'),label = "get data from bigquery"),
-    h4('If there is no information please click to load data')
+    plotlyOutput(NS(id,'dist_all')),
+    br()
+    
   )
 }
 
