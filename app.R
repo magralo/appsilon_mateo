@@ -56,6 +56,8 @@ inDUI <- function(id) {
     br(),
     plotlyOutput(NS(id,'dist_all')),
     br(),
+    numeric_input(NS(id,'get_th'),label = "Distance threshold for distribution",min = 0,value = 1),
+    br(),
     actionButton(NS(id,'get_iddata'),label = "get data from bigquery"),
     h4('If there is no information please click to load data')
   )
@@ -111,15 +113,16 @@ inDServer <- function(id,name,sid) {
       df=data()
       if(name()==df$shipname[1]&&sid()==df$ship_id [1]){
         ggplotly(df%>%
-                   mutate(dist=log(1+get_distance(lon,lat)))%>%
-                   ggplot(aes(x='z',y=dist))+
-                   geom_boxplot(fill='lightblue')+
+                   mutate(dist=get_distance(lon,lat))%>%
+                   filter(dist>input$get_th)%>%
+                   mutate(dist=log(1+dist))%>%
+                   ggplot(aes(dist))+
+                   geom_histogram(fill='lightblue')+
                    ggthemes::theme_hc()+
                    labs(title = 'Distance (Log) distribution',x='',y='log Distance (M)')
         )
       }else{
-        leaflet() %>%
-          addTiles() 
+        
       }
     })
     
