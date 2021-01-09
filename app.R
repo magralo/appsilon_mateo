@@ -21,6 +21,19 @@ selectNamesServer <- function(id, vtype , data ) {
 }
 
 
+selectIdServer <- function(id, sname , data ) {
+  stopifnot(is.reactive(sname))
+  moduleServer(id, function(input, output, session) {
+    reactive({
+      data %>%
+        filter(SHIPNAME==sname())%>%
+        select(SHIP_ID)%>%
+        pull()
+    })
+  })
+}
+
+
 
 
 CardsServer <- function(id, value , title="Sample title" ,units) {
@@ -59,9 +72,10 @@ ui <- semanticPage(
                                  "Fishing","Pleasure","High Special","Navigation")),
          br(),
          uiOutput('selection'),
+         uiOutput('selection_id'),
          uiOutput('cards')
        ),
-       main = semanticPage(leafletOutput('simple_map',height = "60%"),plotlyOutput('simple_stats',height = "40%")),
+       main = semanticPage(leafletOutput('simple_map',height = "60%"),br(),plotlyOutput('simple_stats',height = "40%")),
        none = semanticPage()
   )
 )
@@ -70,24 +84,26 @@ ui <- semanticPage(
 server <- function(input, output, session) {
   
   data <- read.csv('data/toshiny.csv')
+  
+  
   module_aux <- reactive({input$v_type})
   names_options = selectNamesServer ('module' ,vtype = module_aux,data=data)
   
-  module_dist <- reactive({to_show()$dist})
+  id_aux <- reactive({input$v_name})
+  id_options = selectIdServer ('module' ,sname = id_aux,data=data)
   
+  
+  module_dist <- reactive({to_show()$dist})
   distance_vessel = CardsServer('dist',value = module_dist,title = "Distance",units = "Meters")
   
   module_speed <- reactive({to_show()$vel})
-  
   speed_vessel = CardsServer('dist',value = module_speed,title = "Speed",units = "knots")
   
   module_mean <- reactive({to_show()$m_dist})
-  
   mean_vessel = CardsServer('mean',value = module_mean,title = "Avg distance",units = "Meters")
   
   module_number <- reactive({to_show()$n_sails})
-  
-  number_vessel = CardsServer('mean',value = module_number,title = "Recorded sails",units = "#")
+  number_vessel = CardsServer('mean',value = module_number,title = "Recorded measures",units = "#")
   
   
   
@@ -96,6 +112,14 @@ server <- function(input, output, session) {
     
     shiny::selectInput('v_name','Available vessels',
                        choices = names_options())
+    
+  })
+  
+  output$selection_id <- renderUI({
+    
+    
+    shiny::selectInput('v_id','Vessel ID',
+                       choices = id_options())
     
   })
   
@@ -117,7 +141,7 @@ server <- function(input, output, session) {
   to_show = reactive({
     
     max_dist = data%>%
-      filter(SHIPNAME==input$v_name)
+      filter(SHIPNAME==input$v_name,SHIP_ID==input$v_id)
     
     n=1
     t1=max_dist$LAT[n]
@@ -143,7 +167,7 @@ server <- function(input, output, session) {
     geo_points=to_show()
     
     
-    z = 14 - findInterval(geo_points$d,rev(c(100000,50000,25000,12000,6000,3000,1000,500,250)))
+    z = 15 - findInterval(geo_points$d,rev(c(100000,50000,25000,12000,6000,3000,1000,500,250)))
     
     map_vessels <- leaflet() %>%
       addTiles() %>%  # use the default base map which is OpenStreetMap tiles
@@ -182,8 +206,8 @@ server <- function(input, output, session) {
       geom_boxplot(fill='lightblue')+facet_wrap(~name,scales = "free",ncol=3)+
       geom_point(data=mini,aes(fill=ship))+
       ggthemes::theme_hc()+
-      labs(title = "Overview of other vessels of the same type",
-           subtitle = vtype,x="",y="Value")
+      labs(title = "General statistics",
+           x="",y="Value")
     
     ggplotly(gg)
     
@@ -200,4 +224,6 @@ if(!file.exists('data/toshiny.csv')){
 }
 
 shinyApp(ui,server)
+
+### To deploy rsconnect::deployApp()
 
