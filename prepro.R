@@ -9,11 +9,12 @@ get_distance <- function(lats,long){
 }
 
 get_distances <- function(name){
-  data = read.csv(name)
+  data = read.csv(name)%>%
+    mutate(SHIPNAME=paste0(SHIPNAME,'_id',SHIP_ID))
   data_dist <- data%>%
-    select(LAT,LON,SPEED,date,port,SHIP_ID,ship_type,SHIPNAME,DATETIME)%>%
+    select(LAT,LON,SPEED,ship_type,SHIPNAME,DATETIME)%>%
     mutate(datefull=lubridate::ymd_hms(DATETIME))%>%
-    group_by(SHIP_ID,SHIPNAME)%>%
+    group_by(SHIPNAME)%>%
     arrange(datefull)%>%
     mutate(distance= get_distance(LON,LAT),LON_fut=lead(LON),LAT_fut=lead(LAT))%>%
     ungroup()%>%
@@ -24,7 +25,7 @@ get_distances <- function(name){
 
 apply_summary <- function(df){
   max_dist = df%>%
-    group_by(SHIP_ID,SHIPNAME)%>%
+    group_by(SHIPNAME)%>%
     mutate(avg_distance=mean(distance), number = length(distance))%>%
     filter(distance==max(distance))%>%
     arrange(datefull)%>%

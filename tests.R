@@ -48,6 +48,22 @@ test_that("basic test for usage of distance", {
 })
 
 
+test_that("check that we modify the name as id_name", {
+  #### Here i made a sample dataset with 2 vessels
+  results = get_distances('data/example_test3.csv')
+  ## LAT,LON but distGeo uses LON,LAT order
+  distancias = c(geosphere::distGeo(c(1,1),c(2,1)), 
+                 geosphere::distGeo(c(2,1),c(2,2)),
+                 geosphere::distGeo(c(1,1),c(2,1)))
+  
+  exp = data.frame(SHIPNAME = c('v1_id1','v1_id1','v2_id2'),
+                   distance = distancias)
+  
+  expect_equal(nrow(inner_join(results,exp,by=c('SHIPNAME','distance'))), nrow(exp))
+  
+})
+
+
 test_that("check distances for each ship", {
   #### Here i made a sample dataset with 2 vessels
   results = get_distances('data/example_test1.csv')
@@ -56,7 +72,7 @@ test_that("check distances for each ship", {
                  geosphere::distGeo(c(2,1),c(2,2)),
                  geosphere::distGeo(c(1,1),c(2,1)))
   
-  exp = data.frame(SHIPNAME = c('v1','v1','v2'),
+  exp = data.frame(SHIPNAME = c('v1_id1','v1_id1','v2_id2'),
                    distance = distancias)
   
   expect_equal(nrow(inner_join(results,exp,by=c('SHIPNAME','distance'))), nrow(exp))
@@ -79,14 +95,13 @@ test_that("check max_distance for each ship", {
   means = c(mean(c(d11,d12)),d21)
   
   
-  exp = data.frame(SHIPNAME = c('v1','v2'),
-                   SHIP_ID = c(1,2) ,
+  exp = data.frame(SHIPNAME = c('v1_id1','v2_id2'),
                    distance = distancias,
                    avg_distance = means,
                    number = c(2,1))
   
   
-  expect_equal(nrow(inner_join(results,exp,by=c('SHIPNAME','SHIP_ID','distance','avg_distance','number'))), nrow(exp))
+  expect_equal(nrow(inner_join(results,exp,by=c('SHIPNAME','distance','avg_distance','number'))), nrow(exp))
   
 })
 
@@ -112,14 +127,13 @@ test_that("check max_distance for each ship special case", {
   
   
   
-  exp = data.frame(SHIPNAME = c('v1','v2','v3'),
-                   SHIP_ID = c(1,2,3) ,
+  exp = data.frame(SHIPNAME = c('v1_id1','v2_id2','v3_id3'),
                    distance = distancias,
                    avg_distance = means,
                    number = c(2,1,4),
                    datefull = lubridate::ymd_hms(c("2016-12-19T11:29:01Z","2016-12-19T11:29:01Z","2016-12-19T11:35:01Z")))
   
-  expect_equal(nrow(inner_join(results,exp,by=c('SHIPNAME','SHIP_ID','distance','avg_distance','number','datefull'))), nrow(exp))
+  expect_equal(nrow(inner_join(results,exp,by=c('SHIPNAME','distance','avg_distance','number','datefull'))), nrow(exp))
   
 })
 
