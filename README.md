@@ -11,7 +11,7 @@ A few notes about this app:
 - Distance between two points is calculated as geosphere::distGeo
 - The in depth tab only loads after a click because the bigquery is not made for BI (at least the standard usage) so the query is to slow so much slower than the rest of the app.
 - If i were to build this app without any implementation restrictions i would have manage 2 big modules (max + indepht) and an auxiliary one (cards) 
-- Testing is in tests.r 
+- Testing is run with shiny::runTests()
 - The bigquery connection uses a secret json that i am not uploading for safety reasons. (It connects to the dataset)
 - If you a more detailed information on how i pre process the whole dataset to get distance between observations please see the functions in prepro.R
 
