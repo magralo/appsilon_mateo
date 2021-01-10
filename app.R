@@ -16,7 +16,7 @@ myGrid <- grid_template(default = list(
 ))
 
 ui <- semanticPage(
-  titlePanel("Hello Appsilon 2"),
+  titlePanel("Hello Appsilon"),
   grid(myGrid,
        menu = semanticPage(
          selectInput('v_type','Select Vessel type',

@@ -52,10 +52,6 @@ inDServer <- function(id,name,sid) {
     
     output$map_all <- renderLeaflet({
       df=data()
-      #print('here')
-      #print(name())
-      #print(sid())
-      #print(head(df))
       if(name()==df$shipname[1]&&sid()==df$ship_id [1]){
         D=df%>%
           mutate(dist=get_distance(lon,lat))%>%
