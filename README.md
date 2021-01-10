@@ -19,3 +19,4 @@ Some coments about the dataset
 
 - There are a few strange ships, for instance the if column matches multiple shipnames or types.
 - For this app we consider an unique vessel the combination of shipname + shipid.
+- We use a log(1+distance) transformation to show statistics because of the scales.

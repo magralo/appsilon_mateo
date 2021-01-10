@@ -95,33 +95,37 @@ server <- function(input, output, session) {
   })
   
   output$selection_id <- renderUI({
+    if (!is.null(id_options())){
+      shiny::selectInput('v_id','Vessel ID',
+                         choices = id_options()) 
+    }
     
-    shiny::selectInput('v_id','Vessel ID',
-                       choices = id_options())
+    
     
   })
   
   
-  output$cards <- renderUI({
-    fluidPage(
-      cards(
-        class = "two",
-        distance_vessel(),
-        speed_vessel(),
-        mean_vessel(),
-        number_vessel(),
-        date_vessel(),
-        ties_vessel()
-      )
-    )
-  })
+  
   
   
   to_show = reactive({
     
     max_dist = data%>%
       filter(SHIPNAME==input$v_name,SHIP_ID==input$v_id)
-
+    
+    output$cards <- renderUI({
+      fluidPage(
+        cards(
+          class = "two",
+          distance_vessel(),
+          speed_vessel(),
+          mean_vessel(),
+          number_vessel(),
+          date_vessel(),
+          ties_vessel()
+        )
+      )
+    })
     
     return(list(lon=max_dist$LON,lat=max_dist$LAT, # initial pos
                 lon_fut=max_dist$LON_fut,lat_fut=max_dist$LAT_fut, #final pos
@@ -142,20 +146,22 @@ server <- function(input, output, session) {
     
     geo_points=to_show()
     
-    z = 15 - findInterval(geo_points$dist,rev(c(100000,50000,25000,12000,6000,3000,1000,500,250)))
-    ### This a naive implementation for a good zoom, i really did not like the fit bound options
-    
-    map_vessels <- leaflet() %>%
-      addTiles() %>%  
-      addCircleMarkers(lng=geo_points$lon, lat=geo_points$lat,
-                       popup="Origin",color = "red") %>%
-      addCircleMarkers(lng=geo_points$lon_fut, lat=geo_points$lat_fut,
-                       popup="Destination",color = "green")%>%
-      addPolylines( lng= c(geo_points$lon,geo_points$lon_fut), 
-                    lat = c(geo_points$lat,geo_points$lat_fut))%>%
-      setView( geo_points$lon,geo_points$lat,zoom = z)
-    
+
+      z = 17 - findInterval(geo_points$dist,rev(c(100000,50000,25000,12000,6000,3000,1000,500,250,100,50)))
+      ### This a naive implementation for a good zoom, i really did not like the fit bound options
+      
+      map_vessels <- leaflet() %>%
+        addTiles() %>%  
+        addCircleMarkers(lng=geo_points$lon, lat=geo_points$lat,
+                         popup="Origin",color = "red") %>%
+        addCircleMarkers(lng=geo_points$lon_fut, lat=geo_points$lat_fut,
+                         popup="Destination",color = "green")%>%
+        addPolylines( lng= c(geo_points$lon,geo_points$lon_fut), 
+                      lat = c(geo_points$lat,geo_points$lat_fut))%>%
+        setView( geo_points$lon,geo_points$lat,zoom = z)
+      
     map_vessels
+    
     
     
   })
