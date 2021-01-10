@@ -4,48 +4,7 @@ library(tidyverse)
 library(lubridate)
 library(leaflet)
 library(plotly)
-
-
-selectNamesServer <- function(id, vtype , data ) {
-  stopifnot(is.reactive(vtype))
-  moduleServer(id, function(input, output, session) {
-    reactive({
-      data %>%
-        filter(ship_type==vtype())%>%
-        select(SHIPNAME)%>%
-        pull()
-    })
-  })
-}
-
-
-selectIdServer <- function(id, sname , data ) {
-  stopifnot(is.reactive(sname))
-  moduleServer(id, function(input, output, session) {
-    reactive({
-      data %>%
-        filter(SHIPNAME==sname())%>%
-        select(SHIP_ID)%>%
-        pull()
-    })
-  })
-}
-
-
-
-
-
-
-### Info Cards Module
-
-source('cards_module.R')
-
-### In depht module
-
-source('indepht_module.R')
-
-
-
+library(bigrquery)
 
 myGrid <- grid_template(default = list(
   areas = rbind(
@@ -97,7 +56,7 @@ server <- function(input, output, session) {
   
   ### Get available vessels names
   module_aux <- reactive({input$v_type})
-  names_options = selectNamesServer ('module' ,vtype = module_aux,data=data)
+  names_options = selectNamesServer ('module' ,vtype = module_aux,data=data) ### Explicit restriction
   
   ### Get ids for the selected vessels... usually just 1 id, just to be sure that we are not seeing 2 different vessels with the same name
   id_aux <- reactive({input$v_name})

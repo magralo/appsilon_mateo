@@ -1,4 +1,4 @@
-source('prepro.R') ### For distance functions
+#source('prepro.R') ### For distance functions
 library(bigrquery)
 inDUI <- function(id) {
   semanticPage(
@@ -45,7 +45,7 @@ inDServer <- function(id,name,sid) {
         
         inc_progress(1)
       })
-      df
+      
       
     })
     
@@ -97,7 +97,7 @@ inDServer <- function(id,name,sid) {
       }
     })
     
-    data()
+    
     
   })
 }
