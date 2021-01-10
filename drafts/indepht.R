@@ -20,18 +20,18 @@ D=df%>%
   filter(!is.na(dist))
 
 aux=which.max(D$dist)
-aux= D[c((aux-1):(aux+1)),]
+
 
   
 leaflet() %>%
   addTiles() %>%  # use the default base map which is OpenStreetMap tiles
   addPolylines( lng= df$lon, 
                 lat = df$lat)%>%
-  addCircleMarkers(lng=aux$lon[2], lat=aux$lat[2],
+  addCircleMarkers(lng=df$lon[aux], lat=df$lat[aux],
                    popup="Origin max",color = "red") %>%
-  addCircleMarkers(lng=aux$lon[3], lat=aux$lat[3],
+  addCircleMarkers(lng=df$lon[aux+1], lat=df$lat[aux+1],
                    popup="Destination max",color = "green")%>%
   addCircleMarkers(lng=D$lon[1], lat=D$lat[1],
                    popup="First Obs",color = "orange")%>%
-  addCircleMarkers(lng=D$lon[nrow(D)], lat=D$lat[nrow(D)],
+  addCircleMarkers(lng=last(df$lon), lat=last(df$lat),
                    popup="last Obs",color = "blue")
