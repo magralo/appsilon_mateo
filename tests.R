@@ -3,6 +3,8 @@ library(shiny)
 
 source('app.R')
 source('prepro.R')
+source('indepht_module.R')
+bigrquery::bq_auth(path = 'secret.json')
 
 ### Module test
 
@@ -136,6 +138,10 @@ test_that("check max_distance for each ship special case", {
   expect_equal(nrow(inner_join(results,exp,by=c('SHIPNAME','distance','avg_distance','number','datefull'))), nrow(exp))
   
 })
+
+
+
+
 
 
 

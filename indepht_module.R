@@ -1,5 +1,5 @@
 source('prepro.R') ### For distance functions
-
+library(bigrquery)
 inDUI <- function(id) {
   semanticPage(
     h4('If there is no information please click to load data'),
@@ -97,7 +97,7 @@ inDServer <- function(id,name,sid) {
       }
     })
     
-    
+    data()
     
   })
 }

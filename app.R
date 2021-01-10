@@ -124,6 +124,7 @@ server <- function(input, output, session) {
   
   ### Call indepht module
   get_id <- reactive({input$v_id})
+  
   inDServer("indepht",name=id_aux,sid=get_id)
   
   output$selection <- renderUI({
@@ -161,19 +162,17 @@ server <- function(input, output, session) {
     
     max_dist = data%>%
       filter(SHIPNAME==input$v_name,SHIP_ID==input$v_id)
+
     
-    t1=max_dist$LAT
-    n1=max_dist$LON
-    t2=max_dist$LAT_fut
-    n2=max_dist$LON_fut
-    d=max_dist$distance
-    v= max_dist$SPEED
-    m_dist= max_dist$avg_distance
-    n_sails= max_dist$number
-    
-    
-    return(list(lon=n1,lat=t1,lon_fut=n2,lat_fut=t2,dist=d,vel=v,m_dist=m_dist,
-                n_sails=n_sails,datetime=max_dist$datefull,n_max=max_dist$n_max))
+    return(list(lon=max_dist$LON,lat=max_dist$LAT, # initial pos
+                lon_fut=max_dist$LON_fut,lat_fut=max_dist$LAT_fut, #final pos
+                dist=max_dist$distance,# Distance of that obs
+                vel=max_dist$SPEED,# Speed of that ob
+                m_dist=max_dist$avg_distance, # Average distance of all obs
+                n_sails=max_dist$number, #number of obs
+                datetime=max_dist$datefull,# Datetime info of the max obs
+                n_max=max_dist$n_max # Number of ties for the max
+                ))
     
   })
   
