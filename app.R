@@ -95,10 +95,10 @@ server <- function(input, output, session) {
   })
   
   output$selection_id <- renderUI({
-    if (!is.null(id_options())){
+    
       shiny::selectInput('v_id','Vessel ID',
                          choices = id_options()) 
-    }
+    
     
     
     
