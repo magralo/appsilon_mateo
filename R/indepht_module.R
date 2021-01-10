@@ -46,12 +46,16 @@ inDServer <- function(id,name,sid) {
         inc_progress(1)
       })
       
-      
+      df
     })
     
     
     output$map_all <- renderLeaflet({
       df=data()
+      #print('here')
+      #print(name())
+      #print(sid())
+      #print(head(df))
       if(name()==df$shipname[1]&&sid()==df$ship_id [1]){
         D=df%>%
           mutate(dist=get_distance(lon,lat))%>%
@@ -96,6 +100,23 @@ inDServer <- function(id,name,sid) {
         plot_ly()
       }
     })
+    
+    reactive({
+      sql = 'SELECT lat,lon,date,datetime, shipname,ship_id 
+              FROM `original-brace-297916.ships.ships` 
+              WHERE shipname = "xxsnxx" AND ship_id= xxsidxx
+              ORDER BY datetime' 
+      
+      sql <- str_replace(sql,'xxsnxx',name())
+      
+      sql <- str_replace(sql,'xxsidxx',sid())
+      
+      
+      return(sql)
+      
+    })
+    
+    
     
     
     
