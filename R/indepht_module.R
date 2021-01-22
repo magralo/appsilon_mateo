@@ -1,5 +1,7 @@
 #source('prepro.R') ### For distance functions
 library(bigrquery)
+library(leaflet)
+library(plotly)
 inDUI <- function(id) {
   semanticPage(
     h4('If there is no information please click to load data'),
